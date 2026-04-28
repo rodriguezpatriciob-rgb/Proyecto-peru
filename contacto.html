@@ -2,23 +2,627 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Contacto - Inti Raymi</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@200;300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/estilo.css">
-    <link rel="stylesheet" href="css/contacto.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand .logo {
+            font-size: 2rem;
+        }
+
+        .nav-brand h1 {
+            font-family: 'Playfair Display', serif;
+            color: #C9A962;
+            font-size: 1.5rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: #F5F0E8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #C9A962;
+        }
+
+        .btn-small {
+            background: transparent;
+            border: 1px solid #C9A962;
+            color: #C9A962;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-small:hover {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        /* Hero Contacto */
+        .contacto-hero {
+            margin-top: 80px;
+            height: 50vh;
+            min-height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 2;
+        }
+
+        .hero-overlay h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-overlay p {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        /* Contenido principal */
+        .contacto-main {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .contacto-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        /* Info Contacto */
+        .info-contacto {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .info-header {
+            position: relative;
+            height: 200px;
+        }
+
+        .info-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-header h3 {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-icon {
+            font-size: 1.8rem;
+        }
+
+        .info-content h4 {
+            color: #722F37;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .info-content p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Google Maps */
+        .mapa-google {
+            margin: 20px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border: 2px solid #C9A962;
+        }
+
+        .mapa-google iframe {
+            width: 100%;
+            height: 280px;
+            border: none;
+            display: block;
+        }
+
+        .direccion-detalle {
+            margin: 0 20px 20px 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, rgba(201,169,98,0.1), rgba(154,123,61,0.05));
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(201,169,98,0.3);
+        }
+
+        .direccion-detalle p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .direccion-detalle strong {
+            color: #722F37;
+        }
+
+        .btn-maps {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #C9A962, #9A7B3D);
+            color: #0D0D0D;
+            padding: 10px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-maps:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201,169,98,0.4);
+        }
+
+        /* Horarios */
+        .horario-contacto {
+            padding: 20px;
+            background: #f9f9f9;
+            margin: 0 20px 20px 20px;
+            border-radius: 12px;
+        }
+
+        .horario-contacto h4 {
+            color: #722F37;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .horario-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .horario-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Formulario */
+        .form-contacto-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #C9A962;
+        }
+
+        .form-header h3 {
+            color: #722F37;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .form-descripcion {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #C9A962;
+            box-shadow: 0 0 0 3px rgba(201,169,98,0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .form-checkbox span {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .btn-enviar {
+            width: 100%;
+            background: linear-gradient(135deg, #722F37, #5a2530);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-enviar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(114,47,55,0.4);
+        }
+
+        .btn-enviar.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .btn-enviar.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-enviar.loading .texto {
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .mensaje-estado {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .mensaje-estado.success {
+            display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .mensaje-estado.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Galería Ambientes */
+        .ambientes-section {
+            margin-top: 60px;
+        }
+
+        .ambientes-section h3 {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #722F37;
+            margin-bottom: 30px;
+        }
+
+        .ambientes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .ambiente-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ambiente-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .ambiente-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .ambiente-card h4 {
+            padding: 15px;
+            text-align: center;
+            color: #722F37;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            color: #F5F0E8;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h5 {
+            color: #C9A962;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201,169,98,0.2);
+            font-size: 0.8rem;
+        }
+
+        /* Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            body { background: #1a1a1a; }
+            .info-contacto, .form-contacto-container, .ambiente-card {
+                background: #1a1a1a;
+                border-color: rgba(201,169,98,0.2);
+            }
+            .info-content p, .form-descripcion, .direccion-detalle p {
+                color: #A8A8A8;
+            }
+            .info-content h4, .horario-contacto h4, .form-header h3 {
+                color: #C9A962;
+            }
+            .horario-contacto {
+                background: #151515;
+            }
+            .form-group label {
+                color: #C9A962;
+            }
+            .form-group input, .form-group select, .form-group textarea {
+                background: #2a2a2a;
+                border-color: #444;
+                color: white;
+            }
+            .horario-item {
+                border-bottom-color: #333;
+                color: #A8A8A8;
+            }
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 992px) {
+            .contacto-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 10px 20px;
+            }
+            .nav-toggle {
+                display: block;
+            }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .contacto-hero {
+                margin-top: 70px;
+                height: 40vh;
+            }
+            .hero-overlay h2 {
+                font-size: 2rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .mapa-google iframe {
+                height: 220px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Navegación -->
     <nav class="navbar">
         <div class="nav-brand">
             <span class="logo">☀️</span>
             <h1>Inti Raymi</h1>
         </div>
         <button class="nav-toggle" id="navToggle">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </button>
         <ul class="nav-menu" id="navMenu">
             <li><a href="index.html">Inicio</a></li>
@@ -29,7 +633,6 @@
         </ul>
     </nav>
 
-    <!-- Hero Contacto -->
     <section class="contacto-hero">
         <div class="hero-image">
             <img src="https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=1920" alt="Contacto Inti Raymi">
@@ -45,7 +648,7 @@
             <!-- Información de Contacto -->
             <section class="info-contacto">
                 <div class="info-header">
-                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600" alt="Restaurante" class="info-image">
+                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600" alt="Restaurante">
                     <h3>Visítanos</h3>
                 </div>
                 
@@ -57,11 +660,29 @@
                     </div>
                 </div>
 
+                <!-- GOOGLE MAPS EMBED -->
+                <div class="mapa-google">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.345678901234!2d-71.975456!3d-13.531950!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x916dd67d6a0c6d57%3A0x8b5f9d5b7e8c4a2f!2sPlaza%20de%20Armas%20de%20Cusco!5e0!3m2!1ses!2spe!4v1690000000000!5m2!1ses!2spe" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                
+                <div class="direccion-detalle">
+                    <p><strong>📍 Estamos en el corazón de Cusco</strong></p>
+                    <p>A una cuadra de la Plaza de Armas</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Cusco+Peru+Plaza+de+Armas" target="_blank" class="btn-maps">
+                        🗺️ Abrir en Google Maps
+                    </a>
+                </div>
+
                 <div class="info-item">
                     <div class="info-icon">📞</div>
                     <div class="info-content">
                         <h4>Teléfono</h4>
-                        <p>(01) 234-5678<br>+52 5579118609</p>
+                        <p>(01) 234-5678<br>+51 984 123 456</p>
                     </div>
                 </div>
 
@@ -88,20 +709,12 @@
                         <span>11:00 - 21:00</span>
                     </div>
                 </div>
-
-                <div class="mapa-container">
-                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800" alt="Mapa ubicación" class="mapa-img">
-                    <div class="mapa-overlay">
-                        <span>🗺️</span>
-                        <p>Ver ubicación en Google Maps</p>
-                    </div>
-                </div>
             </section>
 
             <!-- Formulario de Contacto -->
             <section class="form-contacto-container">
                 <div class="form-header">
-                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400" alt="Contacto" class="form-image">
+                    <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400" alt="Contacto">
                     <h3>Envíanos un mensaje</h3>
                     <p class="form-descripcion">Completa el formulario y te responderemos en breve</p>
                 </div>
@@ -190,6 +803,7 @@
                 <h5>Contacto</h5>
                 <p>📍 Av. Sol 123, Cusco</p>
                 <p>📞 (01) 234-5678</p>
+                <p>✉️ info@intiraymi.pe</p>
             </div>
             <div class="footer-section">
                 <h5>Síguenos</h5>
@@ -204,6 +818,8 @@
             <p>&copy; 2026 Inti Raymi Restaurant. Todos los derechos reservados.</p>
         </div>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function(){
@@ -211,8 +827,144 @@
         })();
     </script>
 
-    <script type="module" src="js/firebase-config.js"></script>
-    <script type="module" src="js/contacto.js"></script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module">
+        import { auth, db, collection, addDoc, serverTimestamp } from './js/firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+        // Menú hamburguesa
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const spans = navToggle.querySelectorAll('span');
+                if (navMenu.classList.contains('active')) {
+                    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                    spans[1].style.opacity = '0';
+                    spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                } else {
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                }
+            });
+        }
+
+        // Actualizar navbar según auth
+        onAuthStateChanged(auth, (user) => {
+            const authLinks = document.getElementById('authLinks');
+            if (authLinks) {
+                if (user) {
+                    authLinks.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                            <span style="color: #C9A962;">⭐ ${user.email}</span>
+                            <a href="mis-pedidos.html" style="color: #C9A962;">📋 Mis Pedidos</a>
+                            <a href="perfil.html" style="color: #C9A962;">⭐ Mi Perfil</a>
+                            <button id="btnLogout" class="btn-small" style="background: transparent; border: 1px solid #C9A962; color: #C9A962; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Salir</button>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        const btn = document.getElementById('btnLogout');
+                        if (btn) btn.onclick = () => { auth.signOut(); window.location.href = 'index.html'; };
+                    }, 100);
+                } else {
+                    authLinks.innerHTML = '<a href="login.html" class="btn-login">Ingresar</a>';
+                }
+            }
+        });
+
+        // Formulario de contacto
+        const contactForm = document.getElementById('contactForm');
+        const btnEnviar = document.getElementById('btnEnviar');
+        const mensajeEstado = document.getElementById('mensajeEstado');
+
+        function mostrarMensaje(tipo, texto) {
+            if (mensajeEstado) {
+                mensajeEstado.className = `mensaje-estado ${tipo}`;
+                mensajeEstado.textContent = texto;
+                setTimeout(() => {
+                    mensajeEstado.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function setLoading(loading) {
+            if (btnEnviar) {
+                if (loading) {
+                    btnEnviar.disabled = true;
+                    btnEnviar.classList.add('loading');
+                } else {
+                    btnEnviar.disabled = false;
+                    btnEnviar.classList.remove('loading');
+                }
+            }
+        }
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const nombre = document.getElementById('contactNombre')?.value.trim();
+                const email = document.getElementById('contactEmail')?.value.trim();
+                const mensaje = document.getElementById('contactMensaje')?.value.trim();
+                
+                if (!nombre || nombre.length < 3) {
+                    mostrarMensaje('error', '⚠ El nombre debe tener al menos 3 caracteres');
+                    return;
+                }
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    mostrarMensaje('error', '⚠ Ingresa un correo electrónico válido');
+                    return;
+                }
+                
+                if (!mensaje || mensaje.length < 10) {
+                    mostrarMensaje('error', '⚠ El mensaje debe tener al menos 10 caracteres');
+                    return;
+                }
+                
+                setLoading(true);
+                
+                const formData = {
+                    nombre: nombre,
+                    email: email,
+                    telefono: document.getElementById('contactTelefono')?.value.trim() || '',
+                    asunto: document.getElementById('contactAsunto')?.value || '',
+                    mensaje: mensaje,
+                    newsletter: document.getElementById('contactNewsletter')?.checked || false,
+                    fecha: serverTimestamp(),
+                    estado: 'nuevo'
+                };
+                
+                try {
+                    await addDoc(collection(db, "contactos"), formData);
+                    mostrarMensaje('success', '✓ Mensaje enviado exitosamente. Te contactaremos pronto.');
+                    contactForm.reset();
+                    
+                    if (typeof emailjs !== 'undefined') {
+                        try {
+                            await emailjs.send('service_0z6lp49', 'template_inlbxge', {
+                                to_name: 'Inti Raymi Restaurant',
+                                from_name: nombre,
+                                from_email: email,
+                                telefono: formData.telefono || 'No proporcionado',
+                                asunto: formData.asunto,
+                                message: mensaje,
+                                reply_to: email
+                            });
+                        } catch (emailError) {
+                            console.log('Email no enviado, pero mensaje guardado');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    mostrarMensaje('error', '⚠ Error al enviar el mensaje. Intenta nuevamente.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+        }
+    </script>
 </body>
 </html>
