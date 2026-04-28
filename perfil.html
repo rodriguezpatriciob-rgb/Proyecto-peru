@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mi Perfil - Inti Raymi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* Navegación */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand .logo {
+            font-size: 2rem;
+        }
+
+        .nav-brand h1 {
+            font-family: 'Playfair Display', serif;
+            color: #C9A962;
+            font-size: 1.5rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: #F5F0E8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #C9A962;
+        }
+
+        .btn-small {
+            background: transparent;
+            border: 1px solid #C9A962;
+            color: #C9A962;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-small:hover {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        /* Contenido principal */
+        .perfil-container {
+            max-width: 1000px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .perfil-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .perfil-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: #C9A962;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .perfil-header p {
+            color: #666;
+        }
+
+        /* Tarjeta de usuario */
+        .user-info-card {
+            background: linear-gradient(135deg, rgba(201,169,98,0.15), rgba(154,123,61,0.1));
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #C9A962;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #C9A962, #9A7B3D);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h3 {
+            color: #C9A962;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .user-details .user-email {
+            color: #C9A962;
+            font-size: 0.9rem;
+        }
+
+        /* Tarjeta de puntos */
+        .puntos-card {
+            background: linear-gradient(135deg, rgba(201,169,98,0.15), rgba(154,123,61,0.1));
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #C9A962;
+        }
+
+        .puntos-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .puntos-icon {
+            font-size: 3rem;
+        }
+
+        .puntos-info {
+            flex: 1;
+        }
+
+        .puntos-info h3 {
+            color: #C9A962;
+            margin: 0 0 5px 0;
+        }
+
+        .puntos-cantidad {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #C9A962;
+        }
+
+        .puntos-stats {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201,169,98,0.3);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #C9A962;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .btn-canjear {
+            background: linear-gradient(135deg, #C9A962, #9A7B3D);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            color: #0D0D0D;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-canjear:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(201,169,98,0.3);
+        }
+
+        .btn-canjear:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Cupón activo */
+        .cupon-activo {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 16px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .cupon-activo code {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        /* Historial */
+        .historial-puntos {
+            background: rgba(26,26,26,0.5);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .historial-puntos h3 {
+            color: #C9A962;
+            margin-bottom: 20px;
+        }
+
+        .historial-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(201,169,98,0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .historial-item:last-child {
+            border-bottom: none;
+        }
+
+        .puntos-badge {
+            background: #C9A962;
+            color: #0D0D0D;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .historial-fecha {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* Botones de acción rápida */
+        .acciones-rapidas {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-accion {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 25px;
+            background: #722F37;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accion:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(114,47,55,0.4);
+        }
+
+        .btn-accion.secondary {
+            background: transparent;
+            border: 2px solid #C9A962;
+            color: #C9A962;
+        }
+
+        .btn-accion.secondary:hover {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            color: #F5F0E8;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h5 {
+            color: #C9A962;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201,169,98,0.2);
+            font-size: 0.8rem;
+        }
+
+        @media (prefers-color-scheme: light) {
+            .historial-puntos { background: rgba(0,0,0,0.05); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 20px;
+            }
+            .nav-toggle {
+                display: block;
+            }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .perfil-container {
+                margin-top: 100px;
+            }
+            .puntos-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .puntos-stats {
+                flex-direction: column;
+            }
+            .historial-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .acciones-rapidas {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-accion {
+                width: 100%;
+                justify-content: center;
+            }
+            /* ============================================ */
+/* MODAL CON SCROLL - CORREGIDO */
+/* ============================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #ffffff;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    position: relative;
+    animation: modalIn 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* CABECERA DEL MODAL FIJA */
+.modal-content h3 {
+    padding: 20px 20px 10px 20px;
+    margin: 0;
+    background: white;
+    border-bottom: 2px solid #C9A962;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* CUERPO DEL MODAL CON SCROLL */
+#cartItems {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
+    max-height: calc(85vh - 200px);
+}
+
+/* Personalizar scrollbar */
+#cartItems::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cartItems::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#cartItems::-webkit-scrollbar-thumb {
+    background: #C9A962;
+    border-radius: 10px;
+}
+
+#cartItems::-webkit-scrollbar-thumb:hover {
+    background: #9A7B3D;
+}
+
+/* FOOTER DEL MODAL FIJO */
+.modal-content .btn-primary {
+    margin: 20px;
+    position: sticky;
+    bottom: 0;
+    background: #722F37;
+}
+
+/* Estilo para cada item del carrito */
+.cart-item {
+    margin-bottom: 10px;
+}
+
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+        border: 1px solid rgba(201,169,98,0.3);
+    }
+    .modal-content h3 {
+        background: #1a1a1a;
+        color: #C9A962;
+    }
+    #cartItems::-webkit-scrollbar-track {
+        background: #2a2a2a;
+    }
+}
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body { background: #1a1a1a; }
+            .user-details p, .perfil-header p { color: #A8A8A8; }
+            .stat-label { color: #888; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">☀️</span>
+            <h1>Inti Raymi</h1>
+        </div>
+        <button class="nav-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="menu.html">Menú</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li id="authLinks">
+                <a href="login.html" class="btn-login">Ingresar</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="perfil-container">
+        <div class="perfil-header">
+            <h2>⭐ Mi Perfil de Lealtad</h2>
+            <p>Acumula puntos con cada compra y obtén descuentos exclusivos</p>
+        </div>
+
+        <!-- Información del usuario -->
+        <div id="userInfoContainer"></div>
+
+        <!-- Puntos -->
+        <div id="puntosContainer"></div>
+
+        <!-- Cupón activo -->
+        <div id="cuponContainer"></div>
+
+        <!-- Historial -->
+        <div class="historial-puntos">
+            <h3>📜 Historial de Actividad</h3>
+            <div id="historialLista"></div>
+        </div>
+
+        <!-- Acciones rápidas -->
+        <div class="acciones-rapidas">
+            <a href="menu.html" class="btn-accion">🍽️ Hacer un Pedido</a>
+            <a href="mis-pedidos.html" class="btn-accion secondary">📋 Ver Mis Pedidos</a>
+            <a href="reservas.html" class="btn-accion secondary">📅 Hacer Reserva</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h5>Inti Raymi</h5>
+                <p>Tradición peruana en cada plato</p>
+            </div>
+            <div class="footer-section">
+                <h5>Contacto</h5>
+                <p>📍 Av. Sol 123, Cusco</p>
+                <p>📞 (01) 234-5678</p>
+                <p>✉️ info@intiraymi.pe</p>
+            </div>
+            <div class="footer-section">
+                <h5>Síguenos</h5>
+                <div class="social-links">
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733547.png" alt="Facebook" width="24"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733558.png" alt="Instagram" width="24"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733579.png" alt="Twitter" width="24"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Inti Raymi Restaurant. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module">
+        import { auth, db, getDoc, doc } from './js/firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+        import { obtenerPuntos, canjearPuntos, renderizarPuntosUI, obtenerCuponActivo } from './js/puntos.js';
+
+        function mostrarNotificacion(mensaje, tipo) {
+            let backgroundColor = tipo === 'success' ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' : 
+                                tipo === 'error' ? 'linear-gradient(135deg, #f44336, #c62828)' :
+                                tipo === 'warning' ? 'linear-gradient(135deg, #FF9800, #E65100)' :
+                                'linear-gradient(135deg, #2196F3, #0D47A1)';
+            
+            if (typeof Toastify !== 'undefined') {
+                Toastify({
+                    text: mensaje,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: backgroundColor, borderRadius: "12px" }
+                }).showToast();
+            } else {
+                console.log(mensaje);
+            }
+        }
+
+        // Menú hamburguesa
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const spans = navToggle.querySelectorAll('span');
+                if (navMenu.classList.contains('active')) {
+                    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                    spans[1].style.opacity = '0';
+                    spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                } else {
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                }
+            });
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            const authLinks = document.getElementById('authLinks');
+            
+            if (!user) {
+                window.location.href = 'login.html?redirect=perfil.html';
+                return;
+            }
+
+            // Actualizar navbar
+            if (authLinks) {
+                authLinks.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <span style="color: #C9A962;">⭐ ${user.email}</span>
+                        <a href="mis-pedidos.html" style="color: #C9A962;">📋 Mis Pedidos</a>
+                        <a href="perfil.html" style="color: #C9A962;">⭐ Mi Perfil</a>
+                        <button id="btnLogout" class="btn-small" style="background: transparent; border: 1px solid #C9A962; color: #C9A962;">Salir</button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const btn = document.getElementById('btnLogout');
+                    if (btn) btn.onclick = () => { auth.signOut(); window.location.href = 'index.html'; };
+                }, 100);
+            }
+
+            // Obtener información del usuario desde Firestore
+            let userNombre = user.displayName || user.email.split('@')[0];
+            let userTelefono = '';
+            
+            try {
+                const userDoc = await getDoc(doc(db, "usuarios", user.uid));
+                if (userDoc.exists()) {
+                    const data = userDoc.data();
+                    userNombre = data.nombre || userNombre;
+                    userTelefono = data.telefono || '';
+                }
+            } catch (error) {
+                console.error("Error obteniendo datos usuario:", error);
+            }
+
+            // Renderizar información del usuario
+            const userInfoContainer = document.getElementById('userInfoContainer');
+            userInfoContainer.innerHTML = `
+                <div class="user-info-card">
+                    <div class="user-avatar">
+                        <span>👤</span>
+                    </div>
+                    <div class="user-details">
+                        <h3>${userNombre}</h3>
+                        <p class="user-email">📧 ${user.email}</p>
+                        ${userTelefono ? `<p>📞 ${userTelefono}</p>` : ''}
+                        <p>🆔 Miembro desde: ${new Date(user.metadata.creationTime).toLocaleDateString('es-MX')}</p>
+                    </div>
+                </div>
+            `;
+
+            // Obtener puntos
+            const puntosData = await obtenerPuntos(user.uid);
+            
+            // Renderizar puntos UI
+            const puntosContainer = document.getElementById('puntosContainer');
+            puntosContainer.innerHTML = renderizarPuntosUI(puntosData, user.uid);
+            
+            // Mostrar historial
+            const historialLista = document.getElementById('historialLista');
+            if (puntosData.historial && puntosData.historial.length > 0) {
+                historialLista.innerHTML = [...puntosData.historial]
+                    .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                    .map(item => `
+                        <div class="historial-item">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 1.3rem;">${item.tipo === 'compra' ? '🛍️' : '🎁'}</span>
+                                <span>${item.tipo === 'compra' ? 'Compra realizada' : 'Canje de puntos'}</span>
+                            </div>
+                            <span class="puntos-badge">${item.tipo === 'compra' ? `+${item.puntosGanados} pts` : `-${item.puntosUsados} pts`}</span>
+                            <span class="historial-fecha">📅 ${new Date(item.fecha).toLocaleDateString('es-MX')}</span>
+                            ${item.tipo === 'compra' ? `<span>💰 $${item.monto?.toFixed(2) || 0} MXN</span>` : `<span>🎫 ${item.descuento}% OFF</span>`}
+                        </div>
+                    `).join('');
+            } else {
+                historialLista.innerHTML = '<p style="text-align: center; padding: 20px;">Aún no tienes actividad. ¡Realiza tu primer pedido!</p>';
+            }
+            
+            // Mostrar cupón activo si existe
+            const cuponContainer = document.getElementById('cuponContainer');
+            const cuponActivo = obtenerCuponActivo();
+            
+            if (cuponActivo && !cuponActivo.usado && new Date(cuponActivo.validoHasta) > new Date()) {
+                cuponContainer.innerHTML = `
+                    <div class="cupon-activo">
+                        <span style="font-size: 1.5rem;">🎫</span>
+                        <p style="margin: 5px 0;"><strong>¡Tienes un cupón activo!</strong></p>
+                        <p>${cuponActivo.porcentaje}% de descuento en tu próximo pedido</p>
+                        <p><code>Código: ${cuponActivo.codigo}</code></p>
+                        <p style="font-size: 0.8rem;">Válido hasta: ${new Date(cuponActivo.validoHasta).toLocaleDateString('es-MX')}</p>
+                        <a href="menu.html" class="btn-small" style="background: white; color: #2E7D32; margin-top: 10px; display: inline-block;">🍽️ Usar ahora</a>
+                    </div>
+                `;
+            } else {
+                cuponContainer.innerHTML = '';
+            }
+            
+            // Evento canjear puntos
+            setTimeout(() => {
+                const btn = document.getElementById('btnCanjearPuntos');
+                if (btn && !btn.hasListener) {
+                    btn.hasListener = true;
+                    btn.onclick = async () => {
+                        if (btn.disabled) return;
+                        
+                        btn.disabled = true;
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = '⏳ Procesando...';
+                        
+                        const resultado = await canjearPuntos(user.uid);
+                        
+                        if (resultado.success) {
+                            mostrarNotificacion(resultado.mensaje, 'success');
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            mostrarNotificacion(resultado.mensaje, 'error');
+                            btn.disabled = false;
+                            btn.innerHTML = originalText;
+                        }
+                    };
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>

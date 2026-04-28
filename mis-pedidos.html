@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mis Pedidos - Inti Raymi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/estilo.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-brand .logo {
+            font-size: 2rem;
+        }
+
+        .nav-brand h1 {
+            font-family: 'Playfair Display', serif;
+            color: #C9A962;
+            font-size: 1.5rem;
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            color: #F5F0E8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: #C9A962;
+        }
+
+        .btn-small {
+            background: transparent;
+            border: 1px solid #C9A962;
+            color: #C9A962;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-small:hover {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        .mis-pedidos-container {
+            max-width: 1200px;
+            margin: 120px auto 60px;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: #C9A962;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .user-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .user-tab {
+            padding: 12px 30px;
+            background: rgba(201,169,98,0.1);
+            border: 2px solid #C9A962;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #C9A962;
+        }
+
+        .user-tab.active {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        .user-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201,169,98,0.3);
+        }
+
+        .user-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .user-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pedido-card, .reserva-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .pedido-card:hover, .reserva-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #C9A962;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #722F37 0%, #5a2530 100%);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .estado-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .estado-badge.pendiente { background: #FFC107; color: #333; }
+        .estado-badge.preparando { background: #FF9800; color: white; }
+        .estado-badge.listo { background: #4CAF50; color: white; }
+        .estado-badge.completado { background: #2196F3; color: white; }
+        .estado-badge.cancelado { background: #9E9E9E; color: white; }
+        .estado-badge.confirmada { background: #4CAF50; color: white; }
+        .estado-badge.cancelada { background: #f44336; color: white; }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .items-list {
+            margin-bottom: 15px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .total-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #722F37;
+        }
+
+        .btn-cancelar {
+            background: transparent;
+            border: 2px solid #f44336;
+            color: #f44336;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancelar:hover {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-ver {
+            background: transparent;
+            border: 2px solid #C9A962;
+            color: #C9A962;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ver:hover {
+            background: #C9A962;
+            color: #0D0D0D;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #C9A962;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: #722F37;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(114,47,55,0.4);
+        }
+
+        .modal-detalle {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-detalle.active {
+            display: flex;
+        }
+
+        .modal-detalle-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #f44336;
+        }
+
+        footer {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+            color: #F5F0E8;
+            padding: 40px 20px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h5 {
+            color: #C9A962;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(201,169,98,0.2);
+            font-size: 0.8rem;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #C9A962;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body { background: #1a1a1a; }
+            .pedido-card, .reserva-card {
+                background: #1a1a1a;
+                border-color: rgba(201,169,98,0.2);
+            }
+            .card-footer {
+                background: #151515;
+            }
+            .item-row {
+                border-bottom-color: #333;
+            }
+            .modal-detalle-content {
+                background: #1a1a1a;
+                color: #F5F0E8;
+            }
+            .page-header p {
+                color: #A8A8A8;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 10px 20px;
+            }
+            .nav-toggle {
+                display: block;
+            }
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #0D0D0D 0%, #1a1a1a 100%);
+                flex-direction: column;
+                padding: 20px;
+                gap: 15px;
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .mis-pedidos-container {
+                margin-top: 100px;
+            }
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .card-footer {
+                flex-direction: column;
+            }
+            .user-tab {
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="logo">☀️</span>
+            <h1>Inti Raymi</h1>
+        </div>
+        <button class="nav-toggle" id="navToggle">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="menu.html">Menú</a></li>
+            <li><a href="reservas.html">Reservas</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li id="authLinks">
+                <a href="login.html" class="btn-login">Ingresar</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="mis-pedidos-container">
+        <div class="page-header">
+            <h2>📋 Mi Actividad</h2>
+            <p>Historial de pedidos y reservaciones</p>
+        </div>
+
+        <div class="user-tabs">
+            <button class="user-tab active" data-section="pedidos">🍽️ Mis Pedidos</button>
+            <button class="user-tab" data-section="reservas">📅 Mis Reservas</button>
+        </div>
+
+        <section id="section-pedidos" class="user-section active">
+            <div id="pedidosList">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Cargando tus pedidos...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-reservas" class="user-section">
+            <div id="reservasList">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Cargando tus reservas...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal Detalle -->
+    <div id="modalDetalle" class="modal-detalle">
+        <div class="modal-detalle-content">
+            <span class="close-modal">&times;</span>
+            <div id="modalDetalleContent"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h5>Inti Raymi</h5>
+                <p>Tradición peruana en cada plato</p>
+            </div>
+            <div class="footer-section">
+                <h5>Contacto</h5>
+                <p>📍 Av. Sol 123, Cusco</p>
+                <p>📞 (01) 234-5678</p>
+            </div>
+            <div class="footer-section">
+                <h5>Síguenos</h5>
+                <div class="social-links">
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733547.png" alt="Facebook" width="24"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733558.png" alt="Instagram" width="24"></a>
+                    <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/733/733579.png" alt="Twitter" width="24"></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Inti Raymi Restaurant. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="module">
+        import { auth, db, updateDoc, doc, collection, query, where, onSnapshot, getDocs } from './js/firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+        let pedidosUnsubscribe = null;
+        let reservasUnsubscribe = null;
+        let pedidosList = [];
+        let reservasList = [];
+
+        function mostrarNotificacion(mensaje, tipo) {
+            let backgroundColor = tipo === 'success' ? 'linear-gradient(135deg, #4CAF50, #2E7D32)' : 'linear-gradient(135deg, #f44336, #c62828)';
+            if (typeof Toastify !== 'undefined') {
+                Toastify({
+                    text: mensaje,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    style: { background: backgroundColor, borderRadius: "12px" }
+                }).showToast();
+            } else {
+                console.log(mensaje);
+            }
+        }
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '-';
+            try {
+                const d = fecha.toDate ? fecha.toDate() : new Date(fecha);
+                return d.toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            } catch { return '-'; }
+        }
+
+        function formatearFechaHora(timestamp) {
+            if (!timestamp) return '-';
+            try {
+                const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+                return d.toLocaleString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            } catch { return '-'; }
+        }
+
+        function getEstadoTexto(estado) {
+            const estados = {
+                'pendiente': '⏳ Pendiente',
+                'preparando': '👨‍🍳 En preparación',
+                'listo': '✅ Listo',
+                'completado': '✔️ Completado',
+                'cancelado': '❌ Cancelado',
+                'confirmada': '✅ Confirmada',
+                'cancelada': '❌ Cancelada'
+            };
+            return estados[estado] || estado;
+        }
+
+        function getEstadoClass(estado) {
+            const classes = {
+                'pendiente': 'pendiente',
+                'preparando': 'preparando',
+                'listo': 'listo',
+                'completado': 'completado',
+                'cancelado': 'cancelado',
+                'confirmada': 'confirmada',
+                'cancelada': 'cancelada'
+            };
+            return classes[estado] || 'pendiente';
+        }
+
+        function ordenarPorFecha(array) {
+            return array.sort((a, b) => {
+                const fechaA = a.fechaCreacion?.toDate ? a.fechaCreacion.toDate() : new Date(a.fechaCreacion || 0);
+                const fechaB = b.fechaCreacion?.toDate ? b.fechaCreacion.toDate() : new Date(b.fechaCreacion || 0);
+                return fechaB - fechaA;
+            });
+        }
+
+        function renderizarPedidos(pedidos) {
+            const container = document.getElementById('pedidosList');
+            if (!container) return;
+
+            const pedidosOrdenados = ordenarPorFecha([...pedidos]);
+
+            if (pedidosOrdenados.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span>🍽️</span>
+                        <h3>No tienes pedidos aún</h3>
+                        <p>Explora nuestro menú y prueba nuestras delicias peruanas</p>
+                        <a href="menu.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">Ver Menú</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pedidosOrdenados.map(pedido => `
+                <div class="pedido-card" data-id="${pedido.id}">
+                    <div class="card-header">
+                        <h4>📦 Pedido #${pedido.id.slice(-6)}</h4>
+                        <span class="estado-badge ${getEstadoClass(pedido.estado)}">${getEstadoTexto(pedido.estado)}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="items-list">
+                            ${(pedido.items || []).slice(0, 3).map(item => `
+                                <div class="item-row">
+                                    <span>${item.nombre} x${item.cantidad}</span>
+                                    <span>$${(item.precio * item.cantidad).toFixed(2)} MXN</span>
+                                </div>
+                            `).join('')}
+                            ${(pedido.items || []).length > 3 ? `<div class="item-row" style="color: #C9A962;">+${pedido.items.length - 3} item(s) más...</div>` : ''}
+                        </div>
+                        <p style="margin: 5px 0;"><strong>📅 Fecha:</strong> ${formatearFechaHora(pedido.fechaCreacion)}</p>
+                        ${pedido.modoParaLlevar ? `<p><strong>📦 Modo:</strong> Para llevar</p>` : `<p><strong>🍽️ Modo:</strong> En restaurante</p>`}
+                        ${pedido.tiempoEstimado ? `<p><strong>⏱️ Tiempo estimado:</strong> ${pedido.tiempoEstimado} min</p>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <span class="total-amount">Total: $${(pedido.total || 0).toFixed(2)} MXN</span>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-ver" onclick="window.verDetallePedido('${pedido.id}')">Ver Detalle</button>
+                            ${(pedido.estado === 'pendiente' || pedido.estado === 'preparando') ? 
+                                `<button class="btn-cancelar" onclick="window.cancelarPedido('${pedido.id}')">Cancelar Pedido</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderizarReservas(reservas) {
+            const container = document.getElementById('reservasList');
+            if (!container) return;
+
+            const reservasOrdenadas = ordenarPorFecha([...reservas]);
+
+            if (reservasOrdenadas.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span>📅</span>
+                        <h3>No tienes reservas aún</h3>
+                        <p>Reserva tu mesa para disfrutar de una experiencia única</p>
+                        <a href="reservas.html" class="btn-primary" style="display: inline-block; margin-top: 20px;">Hacer Reserva</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reservasOrdenadas.map(reserva => `
+                <div class="reserva-card" data-id="${reserva.id}">
+                    <div class="card-header">
+                        <h4>🪑 Mesa ${reserva.mesaId || '-'}</h4>
+                        <span class="estado-badge ${getEstadoClass(reserva.estado)}">${getEstadoTexto(reserva.estado)}</span>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>📍 Área:</strong> ${reserva.area === 'salon-principal' ? 'Salón Principal' : reserva.area === 'terraza' ? 'Terraza' : reserva.area === 'vip' ? 'Zona VIP' : 'Bar'}</p>
+                        <p><strong>📅 Fecha:</strong> ${formatearFecha(reserva.fecha)}</p>
+                        <p><strong>⏰ Hora:</strong> ${reserva.hora || '-'}</p>
+                        <p><strong>👥 Personas:</strong> ${reserva.personas || '-'}</p>
+                        ${reserva.notas ? `<p><strong>📝 Notas:</strong> ${reserva.notas}</p>` : ''}
+                    </div>
+                    <div class="card-footer">
+                        <span class="total-amount">Reserva confirmada</span>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-ver" onclick="window.verDetalleReserva('${reserva.id}')">Ver Detalle</button>
+                            ${(reserva.estado === 'confirmada' || reserva.estado === 'pendiente') ? 
+                                `<button class="btn-cancelar" onclick="window.cancelarReserva('${reserva.id}')">Cancelar Reserva</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funciones globales
+        window.cancelarPedido = async function(pedidoId) {
+            if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
+                try {
+                    await updateDoc(doc(db, "pedidos", pedidoId), { estado: 'cancelado' });
+                    mostrarNotificacion('✅ Pedido cancelado exitosamente', 'success');
+                } catch (error) {
+                    console.error('Error cancelando pedido:', error);
+                    mostrarNotificacion('❌ Error al cancelar el pedido', 'error');
+                }
+            }
+        };
+
+        window.cancelarReserva = async function(reservaId) {
+            if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+                try {
+                    await updateDoc(doc(db, "reservas", reservaId), { estado: 'cancelada' });
+                    mostrarNotificacion('✅ Reserva cancelada exitosamente', 'success');
+                } catch (error) {
+                    console.error('Error cancelando reserva:', error);
+                    mostrarNotificacion('❌ Error al cancelar la reserva', 'error');
+                }
+            }
+        };
+
+        window.verDetallePedido = function(pedidoId) {
+            const modal = document.getElementById('modalDetalle');
+            const content = document.getElementById('modalDetalleContent');
+            
+            const pedido = pedidosList.find(p => p.id === pedidoId);
+            if (pedido) {
+                content.innerHTML = `
+                    <h3 style="color: #C9A962; margin-bottom: 20px;">📦 Detalle del Pedido</h3>
+                    <p><strong>ID:</strong> #${pedido.id.slice(-8)}</p>
+                    <p><strong>Fecha:</strong> ${formatearFechaHora(pedido.fechaCreacion)}</p>
+                    <p><strong>Estado:</strong> ${getEstadoTexto(pedido.estado)}</p>
+                    <hr style="margin: 15px 0;">
+                    <h4>Items:</h4>
+                    ${(pedido.items || []).map(item => `
+                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                            <span>${item.nombre} x${item.cantidad}</span>
+                            <span>$${(item.precio * item.cantidad).toFixed(2)} MXN</span>
+                        </div>
+                    `).join('')}
+                    <hr style="margin: 15px 0;">
+                    <p><strong>Subtotal:</strong> $${(pedido.subtotal || 0).toFixed(2)} MXN</p>
+                    ${pedido.descuento ? `<p><strong>Descuento:</strong> -$${pedido.descuento.toFixed(2)} MXN</p>` : ''}
+                    <p style="font-size: 1.2rem; font-weight: bold; margin-top: 10px;"><strong>Total:</strong> $${(pedido.total || 0).toFixed(2)} MXN</p>
+                    ${pedido.modoParaLlevar ? '<p><strong>📦 Para llevar</strong></p>' : '<p><strong>🍽️ En restaurante</strong></p>'}
+                `;
+                modal.classList.add('active');
+            }
+        };
+
+        window.verDetalleReserva = function(reservaId) {
+            const modal = document.getElementById('modalDetalle');
+            const content = document.getElementById('modalDetalleContent');
+            
+            const reserva = reservasList.find(r => r.id === reservaId);
+            if (reserva) {
+                content.innerHTML = `
+                    <h3 style="color: #C9A962; margin-bottom: 20px;">📅 Detalle de la Reserva</h3>
+                    <p><strong>ID:</strong> #${reserva.id.slice(-8)}</p>
+                    <p><strong>Mesa:</strong> ${reserva.mesaId}</p>
+                    <p><strong>Área:</strong> ${reserva.area === 'salon-principal' ? 'Salón Principal' : reserva.area === 'terraza' ? 'Terraza' : reserva.area === 'vip' ? 'Zona VIP' : 'Bar'}</p>
+                    <p><strong>Fecha:</strong> ${formatearFecha(reserva.fecha)}</p>
+                    <p><strong>Hora:</strong> ${reserva.hora}</p>
+                    <p><strong>Personas:</strong> ${reserva.personas}</p>
+                    ${reserva.notas ? `<p><strong>Notas:</strong> ${reserva.notas}</p>` : ''}
+                    <p><strong>Estado:</strong> ${getEstadoTexto(reserva.estado)}</p>
+                `;
+                modal.classList.add('active');
+            }
+        };
+
+        // Menú hamburguesa
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const spans = navToggle.querySelectorAll('span');
+                if (navMenu.classList.contains('active')) {
+                    spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                    spans[1].style.opacity = '0';
+                    spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                } else {
+                    spans[0].style.transform = 'none';
+                    spans[1].style.opacity = '1';
+                    spans[2].style.transform = 'none';
+                }
+            });
+        }
+
+        // Modal close
+        const modal = document.getElementById('modalDetalle');
+        const closeModal = modal?.querySelector('.close-modal');
+        if (closeModal) {
+            closeModal.onclick = () => modal.classList.remove('active');
+            modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
+        }
+
+        // Tabs
+        document.querySelectorAll('.user-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const section = tab.dataset.section;
+                document.querySelectorAll('.user-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.user-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`section-${section}`).classList.add('active');
+            });
+        });
+
+        // Autenticación y carga de datos (SIN orderBy para evitar errores de índice)
+        onAuthStateChanged(auth, async (user) => {
+            const authLinks = document.getElementById('authLinks');
+            
+            if (!user) {
+                window.location.href = 'login.html?redirect=mis-pedidos.html';
+                return;
+            }
+
+            console.log("👤 Usuario autenticado:", user.uid, user.email);
+
+            // Actualizar navbar
+            if (authLinks) {
+                authLinks.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <span style="color: #C9A962;">⭐ ${user.email}</span>
+                        <a href="mis-pedidos.html" style="color: #C9A962;">📋 Mis Pedidos</a>
+                        <a href="perfil.html" style="color: #C9A962;">⭐ Mi Perfil</a>
+                        <button id="btnLogout" class="btn-small" style="background: transparent; border: 1px solid #C9A962; color: #C9A962;">Salir</button>
+                    </div>
+                `;
+                setTimeout(() => {
+                    const btn = document.getElementById('btnLogout');
+                    if (btn) btn.onclick = () => { auth.signOut(); window.location.href = 'index.html'; };
+                }, 100);
+            }
+
+            // Cargar pedidos - SIN orderBy para evitar error de índice
+            const pedidosQuery = query(
+                collection(db, "pedidos"),
+                where("userId", "==", user.uid)
+            );
+            
+            if (pedidosUnsubscribe) pedidosUnsubscribe();
+            pedidosUnsubscribe = onSnapshot(pedidosQuery, (snapshot) => {
+                pedidosList = [];
+                snapshot.forEach(doc => {
+                    pedidosList.push({ id: doc.id, ...doc.data() });
+                });
+                console.log(`📦 Pedidos cargados: ${pedidosList.length}`);
+                renderizarPedidos(pedidosList);
+            }, (error) => {
+                console.error("❌ Error cargando pedidos:", error);
+                document.getElementById('pedidosList').innerHTML = `
+                    <div class="empty-state">
+                        <span>⚠️</span>
+                        <h3>Error al cargar pedidos</h3>
+                        <p>${error.message}</p>
+                        <button onclick="location.reload()" class="btn-primary" style="margin-top: 20px;">Reintentar</button>
+                    </div>
+                `;
+            });
+
+            // Cargar reservas - SIN orderBy para evitar error de índice
+            const reservasQuery = query(
+                collection(db, "reservas"),
+                where("userId", "==", user.uid)
+            );
+            
+            if (reservasUnsubscribe) reservasUnsubscribe();
+            reservasUnsubscribe = onSnapshot(reservasQuery, (snapshot) => {
+                reservasList = [];
+                snapshot.forEach(doc => {
+                    reservasList.push({ id: doc.id, ...doc.data() });
+                });
+                console.log(`📅 Reservas cargadas: ${reservasList.length}`);
+                renderizarReservas(reservasList);
+            }, (error) => {
+                console.error("❌ Error cargando reservas:", error);
+                document.getElementById('reservasList').innerHTML = `
+                    <div class="empty-state">
+                        <span>⚠️</span>
+                        <h3>Error al cargar reservas</h3>
+                        <p>${error.message}</p>
+                        <button onclick="location.reload()" class="btn-primary" style="margin-top: 20px;">Reintentar</button>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
