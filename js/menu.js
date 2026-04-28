@@ -1,11 +1,6 @@
-// ============================================
-// MENÚ.JS - CARRITO, PEDIDOS Y PUNTOS
-// ============================================
-
 import { auth, db, collection, addDoc, doc, getDoc, setDoc } from './firebase-config.js';
 import { calcularTiempoEstimado } from './tiempo-pedido.js';
 
-// Variables globales
 let cart = [];
 let modoParaLlevar = false;
 let cuponAplicado = null;
@@ -180,10 +175,6 @@ function actualizarCarrito() {
         }
     }
 }
-
-// ============================================
-// ACTUALIZAR BADGES DE LOS BOTONES
-// ============================================
 function actualizarBadges() {
     document.querySelectorAll('.btn-add').forEach(btn => {
         const itemName = btn.dataset.item;
@@ -202,10 +193,6 @@ function actualizarBadges() {
         }
     });
 }
-
-// ============================================
-// FUNCIONES GLOBALES PARA EL CARRITO
-// ============================================
 window.modificarCantidad = function(index, cambio) {
     if (!cart[index]) return;
     cart[index].cantidad += cambio;
@@ -221,10 +208,6 @@ window.eliminarDelCarrito = function(index) {
     actualizarCarrito();
     actualizarBadges();
 };
-
-// ============================================
-// INICIALIZAR TABS DEL MENÚ
-// ============================================
 function inicializarTabs() {
     document.querySelectorAll('.menu-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -237,10 +220,6 @@ function inicializarTabs() {
         });
     });
 }
-
-// ============================================
-// INICIALIZAR BOTONES DE AGREGAR (SIN ALERTAS)
-// ============================================
 function inicializarBotonesAgregar() {
     document.querySelectorAll('.btn-add').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -261,14 +240,9 @@ function inicializarBotonesAgregar() {
             
             actualizarCarrito();
             actualizarBadges();
-            // SIN NOTIFICACIÓN - solo se agrega silenciosamente
         });
     });
 }
-
-// ============================================
-// INICIALIZAR MODAL DEL CARRITO
-// ============================================
 function inicializarModal() {
     const btnVerPedido = document.getElementById('btnVerPedido');
     const modalPedido = document.getElementById('modalPedido');
@@ -289,10 +263,6 @@ function inicializarModal() {
         });
     });
 }
-
-// ============================================
-// INICIALIZAR MODO PARA LLEVAR
-// ============================================
 function inicializarModoParaLlevar() {
     const modalPedido = document.getElementById('modalPedido');
     if (!modalPedido) return;
@@ -330,15 +300,10 @@ function inicializarModoParaLlevar() {
                     label.style.background = isActive ? '#C9A962' : 'transparent';
                     label.style.color = isActive ? '#0D0D0D' : '#C9A962';
                 });
-                // No mostrar notificación al cambiar modo
             });
         });
     }
 }
-
-// ============================================
-// REALIZAR PEDIDO
-// ============================================
 function inicializarBotonPedido() {
     const btnHacerPedido = document.getElementById('btnHacerPedido');
     if (!btnHacerPedido) return;
@@ -427,10 +392,6 @@ function inicializarBotonPedido() {
         }
     });
 }
-
-// ============================================
-// VERIFICAR CUPÓN AL INICIO
-// ============================================
 function verificarCuponInicial() {
     const cupon = obtenerCuponActivo();
     if (cupon && !cupon.usado) {
@@ -438,10 +399,6 @@ function verificarCuponInicial() {
         mostrarNotificacion(`🎫 Cupón de ${cupon.porcentaje}% descuento disponible!`, 'info');
     }
 }
-
-// ============================================
-// INICIALIZAR TODO
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🍽️ Inicializando menu.js...");
     inicializarTabs();
